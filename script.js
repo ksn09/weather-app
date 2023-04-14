@@ -6,9 +6,29 @@ let weather = {
 
             fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${this.Api}`)
             .then((response) => {
-                return response.json();
+
+                if (!response.ok) {
+                    throw Error("City has not been found");
+                } else {
+
+                    document.querySelector('.description').style.display = `block`;
+                    document.querySelector('.box').style.display = `flex`;
+                    document.querySelector('.humidity').style.display = `block`;
+                    document.querySelector('.wind').style.display = `block`;
+                    return response.json();
+                }
             })
-            .then((data) => this.displayWeather(data));    
+            .then((data) => this.displayWeather(data))
+            .catch ((err) => {
+                console.log(err.message);
+                document.querySelector('.city').innerText = err.message;
+                document.querySelector('.description').style.display = `none`;
+                document.querySelector('.box').style.display = `none`;
+                document.querySelector('.humidity').style.display = `none`;
+                document.querySelector('.wind').style.display = `none`;
+            }
+ 
+            )   
         },
 
     displayWeather: function(data){
@@ -38,6 +58,7 @@ function search(){
 document.querySelector('.btn').addEventListener('click', function(){
     search();
 });
+
 
 document.querySelector('.search-bar').addEventListener('keyup', function(event){
     if (event.key == "Enter"){
